@@ -22,7 +22,7 @@ for i in range(num_silos):
     cursor.execute(sql)
 
 cursor.execute("CREATE TABLE  opts (Nsilos int, COM text, API_EST text)")
-cursor.execute("INSERT INTO opts VALUES (?, ?, ?)", (num_silos,'COM3','https://api.weather.com/v2/pws/observations/current?apiKey=e1f10a1e78da46f5b10a1e78da96f525&stationId=IPONTA40&numericPrecision=decimal&format=json&units=e'))
+cursor.execute("INSERT INTO opts VALUES (?, ?, ?)", (num_silos,'/dev/ttyS0','https://api.weather.com/v2/pws/observations/current?apiKey=e1f10a1e78da46f5b10a1e78da96f525&stationId=IGUARA60&numericPrecision=decimal&format=json&units=m'))
 
 # Criptografa a mensagem usando a chave pública
 senha_criptografada = rsa.encrypt(b'S@fr@2024', public_key)
