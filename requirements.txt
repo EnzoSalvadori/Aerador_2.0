@@ -1,0 +1,8 @@
+flask
+flask_login
+flask_socketio
+requests
+pandas
+pyserial
+rsa
+openpyxl

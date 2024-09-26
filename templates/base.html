@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    /* Estilos para dividir a página */
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .left {
+      width: 30%;
+      background-color: #fff;
+      box-sizing: border-box;
+      margin-top: 1%;
+    }
+
+    .right {
+      width: 67%;
+      padding: 0 1%;
+      background-color: #fff;
+      border-left: 1px solid #ccc;
+    }
+
+    /* Estilos para as divs internas */
+    .div-wrapper {
+      padding: 3%;
+      padding-bottom: 1%;
+      padding-top: 1%;
+    }
+
+    h2 {
+      font-size: 150%;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .row {
+      margin-bottom: 5px;
+    }
+
+    span.label {
+      font-weight: bold;
+    }
+
+    span.value {
+      color: #555;
+    }
+
+    span.tempumi {
+      font-weight: bold;
+      font-size: 25px;
+    }
+
+    .botao {
+      padding: 10px 20px;
+      margin: 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+
+    }
+
+    .botao:hover {
+      background-color: #0056b3;
+    }
+
+    .radio-wrapper {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .radio-wrapper label {
+      display: inline-block;
+      padding: 6px 10px;
+      background-color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .radio-wrapper input[type="radio"] {
+      display: none;
+    }
+
+    .radio-wrapper input[type="radio"]:checked+label {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    table {
+      width: 95%;
+    }
+
+    th {
+      background-color: #333333;
+      /* Cor mais escura para o cabeçalho */
+      color: white;
+    }
+
+    td {
+      width: 300px;
+      height: 30px;
+      background-color: #f2f2f2;
+      /* Cor mais clara para as células */
+    }
+
+    .row-right {
+      margin-bottom: 1%;
+      margin-top: 1%;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .button-container form {
+      margin: 10px 10px;
+    }
+
+    .range {
+      width: 20%;
+    }
+
+    .range2 {
+      height: 0.8vw;
+      width: 8%;
+    }
+
+    .linha-separadora {
+      border-top: 1px solid #ccc;
+      margin-top: 1%;
+    }
+
+    /* Estilo para o tooltip */
+    .tooltip {
+      font-weight: bold;
+      font-size: 25px;
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted black;
+      /* Adiciona uma linha pontilhada por baixo do texto */
+    }
+
+    .tooltip .tooltiptext {
+      font-size: 15px;
+      font-weight: normal;
+      visibility: hidden;
+      width: 400px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+
+      /* Posicionamento do tooltip */
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 125%;
+      transform: translateY(-50%);
+
+      /* Fade in animation */
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Mostra o tooltip quando passa o mouse por cima */
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Estilo do quadrado */
+    .quadrado {
+        width: 10px;
+        height: 10px;
+        background-color: red; /* Cor inicial */
+        display: inline-block;
+    }
+
+  </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
+  <script>
+
+    function updateMinMax(value, id) {
+      if (!id.includes("Tmp")) {
+        document.getElementById(id).textContent = value;
+      }
+      mensagem = id + '|' + value
+      socket.emit('MaxMin', mensagem);
+    }
+
+    var socket = io();
+
+    socket.on('connect', function () {
+      console.log('Conectado ao servidor WebSocket');
+    });
+
+    socket.on('disconnect', function () {
+      console.log('Desconectado do servidor WebSocket');
+    });
+
+    socket.on('atualizar', function (dados) {
+
+      if(dados["ONLINE"]){
+        document.getElementById('ONLINE').innerText = "RADIO ON";
+        document.getElementById('ONLINE_Q').style.backgroundColor = "#00FF00";
+      }
+      else{
+        document.getElementById('ONLINE').innerText = "RADIO OFF";
+        document.getElementById('ONLINE_Q').style.backgroundColor = "#FF0000";
+      }
+
+      var tabela = document.getElementById('tabela');
+
+      for (var i = 0; i < tabela.rows.length; i++) {
+        var linha = tabela.rows[i];
+        for (var j = 0; j < linha.cells.length; j++) {
+          var celula = linha.cells[j];
+          celula.style.backgroundColor = '#f2f2f2';
+          if (i == 0 || j == 0) {
+            celula.style.backgroundColor = '#333333';
+            celula.style.color = 'white';
+          }
+        }
+      }
+
+      for (var i = 0; i < dados["ponto"].length; i++) {
+        console.log(dados["ponto"][i])
+        for (var j = 0; j < dados["ponto"][i][0].length; j++) { //iterando pela quantidade de linhas da tabela
+          tabela.rows[dados["ponto"][i][0][j]].cells[dados["ponto"][i][1]].style.backgroundColor = 'red';
+        }
+      }
+
+      document.getElementById('temp_o').innerText = dados["temperatura"] + "°C";
+      document.getElementById('temp').innerText = dados["temperatura"] + 3 + "°C";
+      document.getElementById('umi').innerText = dados["umidade"] + "%";
+
+      for (var i = 0; i < dados["numSilos"]; i++) {
+        num = i + 1
+        document.getElementById('s' + num + 'P').innerText = dados["produto"][i];
+        document.getElementById('eq' + num).innerText = dados["equilibrioHidro"][i];
+        document.getElementById('Min' + num).innerText = dados["min"][i];
+        document.getElementById('Max' + num).innerText = dados["max"][i];
+        document.getElementById('Temp_Max' + num).value = dados["temp_max"][i];
+
+        if (dados["estado"][i] == "automatico") {
+          element = document.getElementById('s' + num + 'Automatico')
+          element.value = 1;
+          element.parentElement.classList.add('ativo');
+          element.checked = true;
+        }
+        if (dados["estado"][i] == "desligado") {
+          element = document.getElementById('s' + num + 'Desligar')
+          element.value = 1;
+          element.parentElement.classList.add('ativo');
+          element.checked = true;
+        }
+        if (dados["estado"][i] == "ligado") {
+          element = document.getElementById('s' + num + 'Ligar')
+          element.value = 1;
+          element.parentElement.classList.add('ativo');
+          element.checked = true;
+        }
+
+        //cond+num
+        //lig+num
+
+        if(dados["LD_silos"][i] == 1){
+          document.getElementById('lig' + num ).style.backgroundColor = "#00FF00"
+        }
+        else{
+          document.getElementById('lig' + num ).style.backgroundColor = "#FF0000"
+        }
+
+        //sempre que nao chover
+        document.getElementById('chuva' + num ).innerText = ""
+
+        //se estiver chovendo
+        if (dados["sinal"][i + 1] == 2) {
+          document.getElementById('chuva' + num ).innerText = " (CHUVA) "
+          document.getElementById('cond' + num ).style.backgroundColor = "#FF0000"
+        }
+        //se estiver automatico e sem sinal de manual
+        else if (dados["sinal"][i + 1] == 1 && dados["sinal"][i + dados["numSilos"] + 2] == 0) {
+          document.getElementById('cond' + num).style.backgroundColor = "#00FF00"
+        }
+        //se nao estiver em nenhum outro
+        else {
+          document.getElementById('cond' + num).style.backgroundColor = "#FF0000"
+        }
+      }
+    });
+
+    function toggleButton(element) {
+      var buttons = element.parentElement.parentElement.getElementsByClassName('radio-wrapper')
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('ativo');
+        buttons[i].getElementsByTagName('input')[0].value = 0
+      }
+      element.parentElement.classList.add('ativo');
+      element.value = 1
+      socket.emit('siloBtn', element.id);
+    }
+
+  </script>
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="left">
+      <div class="div-wrapper">
+        <div style="margin-bottom: 10px;">
+          <span class="tempumi">Temperatura:</span>
+          <span id="temp_o" class="tempumi">Desconectado</span>
+          <span class="tempumi">/</span>
+          <div class="tooltip">
+            <span id="temp" style="color: crimson;" class="tempumi">Desconectado</span>
+            <i class="fa fa-info-circle" aria-hidden="true" style="font-size: 20px;"></i>
+            <span class="tooltiptext">Temperatura do ar enviado para o produto esquenta em 3 graus devido ao calor gerado pelos
+              vetiladores</span>
+          </div>
+        </div>
+        <span class="tempumi">Umidade:</span>
+        <span id="umi" class="tempumi">Desconectado</span>
+        <span id="ONLINE" class="tempumi">RADIO OFF</span>
+        <div class="quadrado" style="width: 15px;height: 15px;" id="ONLINE_Q"></div>
+      </div>
+      <div class="linha-separadora"></div> <!-- Linha separadora horizontal -->
+      {% for i in range(1,Nsilos+1) %}
+      <div class="div-wrapper">
+        <h2>Silo {{i}}</h2>
+        <div class="row">
+          <div>
+            <span class="label">Produto:</span>
+            <span class="value" id="s{{i}}P">Desconectado</span>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <span class="label">Equilíbrio Hidroscópico:</span>
+            <span class="value" id="eq{{i}}">Desconectado</span>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <span class="label">Condição/Ligado:</span>
+            <span class="label" id="chuva{{i}}" style="color: red;"></span>
+            <div class="quadrado" id="cond{{i}}"></div>
+            <div class="quadrado" id="lig{{i}}"></div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="label">Min-Max:</span>
+          <input class="range" type="range" id="rangeInput1" name="rangeInput1" min="11" max="16" step="0.1"
+            onchange="updateMinMax(this.value,'Min{{i}}')">
+          <span id="Min{{i}}"></span>
+          <input class="range" type="range" id="rangeInput2" name="rangeInput2" min="11" max="16" step="0.1"
+            onchange="updateMinMax(this.value,'Max{{i}}')">
+          <span id="Max{{i}}"></span>
+        </div>
+        <div class="row">
+          <span class="label">Temperatura Máxima:</span>
+          <input class="range2" type="number" id="Temp_Max{{i}}" name="rangeInput3" min="0" max="50" step="1"
+            onchange="updateMinMax(this.value,'Tmp{{i}}')">
+        </div>
+        <div class="row">
+          <div class="radio-wrapper">
+            <input type="radio" value="0" name="silo{{i}}" id="s{{i}}Automatico" onclick="toggleButton(this)">
+            <label for="s{{i}}Automatico">Automático</label>
+          </div>
+          <div class="radio-wrapper">
+            <input type="radio" value="0" name="silo{{i}}" id="s{{i}}Desligar" onclick="toggleButton(this)">
+            <label for="s{{i}}Desligar">Desligado</label>
+          </div>
+          <div class="radio-wrapper">
+            <input type="radio" value="0" name="silo{{i}}" id="s{{i}}Ligar" onclick="toggleButton(this)">
+            <label for="s{{i}}Ligar">Ligado</label>
+          </div>
+        </div>
+      </div>
+      <div class="linha-separadora"></div> <!-- Linha separadora horizontal -->
+      {% endfor %}
+    </div>
+    <div class="right">
+      <div class="row-right" style="margin-bottom: 0;">
+        <div class="button-container" style="justify-content: flex-end;">
+          <a class="botao" href="grafico" style="background-color: maroon;"><i style="margin-right: 5px;"
+              class="fas fa-th-list"></i>Gráficos</a>
+          <a class="botao" href="config" style="background-color: maroon;"><i style="margin-right: 5px;"
+              class="fas fa-cog"></i>Configuração</a>
+        </div>
+      </div>
+      <div class="row-right">
+        <div class="button-container" style="justify-content: flex-end">
+          <h1 style="width: 100%; margin-left: 1%;">Tabela de cultivo: {{cultivo}}</h1>
+          <form action="/" method="get">
+            <button class="botao" type="submit" name="cultivo" value="Soja">Soja</button>
+          </form>
+
+          <form action="/" method="get">
+            <button class="botao" type="submit" name="cultivo" value="Milho">Milho</button>
+          </form>
+
+          <form action="/" method="get">
+            <button class="botao" type="submit" name="cultivo" value="Trigo">Trigo</button>
+          </form>
+
+          <form action="/" method="get">
+            <button class="botao" type="submit" name="cultivo" value="Cevada">Cevada</button>
+          </form>
+        </div>
+        <table id="tabela" style="width: 98%;">
+          <thead>
+            <tr>
+              {% for col in tabela.columns %}
+              <th>{{ col }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for _, row in tabela.iterrows() %}
+            <tr>
+              {% for _, value in row.items() %}
+              <td>{{ value }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

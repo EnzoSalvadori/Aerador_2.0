@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico Ligado/Desligado</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<style>
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .left {
+        width: 80%;
+        background-color: #fff;
+        box-sizing: border-box;
+        margin-top: 1%;
+    }
+
+    .right {
+        width: 19%;
+        background-color: #fff;
+    }
+
+    .botao {
+        padding: 10px 20px;
+        margin: 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .button-container form {
+        margin: 10px 10px;
+    }
+
+    .row-right {
+        margin-bottom: 1%;
+        margin-top: 1%;
+    }
+
+    #myChart {
+            max-width: 60%;
+            width: 100%;
+            max-height: 100%;
+        }
+
+</style>
+
+<body>
+    <div class="container">
+        <div class="left">
+            <h1>Gráfico Ligado/Desligado</h1>
+        </div>
+        <div class="right">
+            <div class="row-right" style="margin-bottom: 0;">
+                <div class="button-container" style="justify-content: flex-end;">
+                    <a class="botao" href="/" style="background-color: blue;"><i class="fas fa-cog"></i>Voltar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form method="post" action="/grafico">
+        <label for="selected_silo">Selecione o Silo:</label>
+        <select id="selected_silo" name="selected_silo">
+            {% for i in range(1,Nsilos+1) %}
+            <option value="{{i}}" {% if selected_silo==i %}selected{% endif %}>Silo {{i}}</option>
+            {% endfor %}
+        </select>
+        <label style="padding-left: 10px;" for="selected_day">Selecione o dia:</label>
+        <input type="date" id="selected_day" name="selected_day" value="{{ selected_day }}">
+        <button type="submit">Filtrar</button>
+    </form>
+    <div class="container">
+        <canvas id="myChart" ></canvas>
+        <h1 style="margin-top: 6%; margin-left: 1%;">TEMPO LIGADO: {{total_time_on_formatted}}</h1>
+    </div>
+
+    <script>
+        var xValues = {{ x_values | tojson }};
+        var yValues = {{ y_values | tojson }};
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: xValues,
+                datasets: [{
+                    label: 'Estado da Máquina',
+                    data: yValues,
+                    borderColor: '#4caf50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.5)',
+                    borderColor: 'rgba(0, 0, 0, 1)',
+                    stepped: true,
+                    fill: 'origin',
+                    showLine: true,
+                    borderWidth: 3,
+                    pointRadius: 5, // Define o tamanho do ponto
+                    pointHoverRadius: 7, // Define o tamanho do ponto ao passar o mouse
+                    pointBackgroundColor: yValues.map(point => point === 0 ? '#FF0000' : '#00FF00'), // Cores dos pontos
+                }]
+            },
+            options: {
+                scales: {
+                    x: [{
+                        type: 'time',
+                        time: {
+                            unit: 'hour',
+                            displayFormats: {
+                                hour: 'HH:mm'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Data e Hora'
+                        }
+                    }],
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'DESLIGADO | LIGADO'
+                        },
+                        ticks: {
+                            min: -0.5,
+                            max: 1.5,
+                            stepSize: 1,
+                            callback: function (value) {
+                                return value === 0 ? 'Desligado' : 'Ligado';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Remove a legenda
+                    },
+
+                    datalabels: {
+                        display: false // Remove a label
+                    },
+
+                    tooltip: {
+                        enabled: true, // Habilita os tooltips
+                        callbacks: {
+                            title: function (tooltipItems) {
+                                return 'Horário: ' + tooltipItems[0].label;
+                            },
+                            label: function (tooltipItem) {
+                                console.log(tooltipItem)
+                                return tooltipItem.raw === 0 ? 'Estado: Desligado' : 'Estado: Ligado';
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    </script>
+</body>
+
+</html>

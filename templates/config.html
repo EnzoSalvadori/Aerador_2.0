@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Página de Configuração</title>
+    <style>
+        body {
+            margin: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .silo {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: 200px;
+            padding: 5px;
+        }
+
+        .btn-salvar {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 200px;
+        }
+
+        .btn-salvar:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function confirmarSalvar() {
+            return confirm("Tem certeza de que deseja salvar os dados?");
+        }
+    </script>
+</head>
+<body>
+    <h1>Seleção de produtos</h1>
+
+    <form action="/" method="POST" onsubmit="return confirmarSalvar()">
+        {% for i in range(1,Nsilos+1) %}
+        <div class="silo">
+            <label for="silo{{i}}">Silo {{i}}:</label>
+            <select id="silo{{i}}" name="silo{{i}}">
+                <option value="Vazio">Vazio</option>
+                <option value="Soja">Soja</option>
+                <option value="Milho">Milho</option>
+                <option value="Trigo">Trigo</option>
+                <option value="Cevada">Cevada</option>
+            </select>
+        </div>
+        {% endfor %}
+        <button class="btn-salvar" type="submit">Salvar</button>
+    </form>
+</body>
+</html>
