@@ -4555,3 +4555,25 @@ KeyError: 'Session is disconnected'
 2024-09-04 10:30:56,795 - INFO - 127.0.0.1 - - [04/Sep/2024 10:30:56] "GET /socket.io/?EIO=4&transport=polling&t=P6zEocL&sid=V33t_7Wheq1XyMuPAAAE HTTP/1.1" 200 -
 2024-09-04 10:30:59,294 - INFO - 127.0.0.1 - - [04/Sep/2024 10:30:59] "POST /socket.io/?EIO=4&transport=polling&t=P6zEpDK&sid=gqvuq2fTY78DPHBZAAAA HTTP/1.1" 200 -
 2024-09-04 10:30:59,295 - INFO - 127.0.0.1 - - [04/Sep/2024 10:30:59] "GET /socket.io/?EIO=4&transport=polling&t=P6zEoWC&sid=gqvuq2fTY78DPHBZAAAA HTTP/1.1" 200 -
+2024-09-26 16:00:31,053 - WARNING - WebSocket transport not available. Install simple-websocket for improved performance.
+2024-09-26 16:00:31,158 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.105:5000
+2024-09-26 16:00:31,159 - INFO - [33mPress CTRL+C to quit[0m
+2024-09-26 16:00:31,434 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:31] "[32mGET / HTTP/1.1[0m" 302 -
+2024-09-26 16:00:31,517 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:31] "[32mGET /login?next=/ HTTP/1.1[0m" 302 -
+2024-09-26 16:00:32,157 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:32] "GET / HTTP/1.1" 200 -
+2024-09-26 16:00:32,668 - ERROR - The WebSocket transport is not available, you must install a WebSocket server that is compatible with your async mode to enable it. See the documentation for details. (further occurrences of this error will be logged with level INFO)
+2024-09-26 16:00:32,669 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:32] "GET /socket.io/?EIO=4&transport=polling&t=P8ljDCO HTTP/1.1" 200 -
+2024-09-26 16:00:32,792 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:32] "POST /socket.io/?EIO=4&transport=polling&t=P8ljDEJ&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:00:32,794 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:32] "GET /socket.io/?EIO=4&transport=polling&t=P8ljDEJ.0&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:00:33,320 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:33] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2024-09-26 16:00:57,684 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:57] "GET /socket.io/?EIO=4&transport=polling&t=P8ljDEg&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:00:57,692 - INFO - 127.0.0.1 - - [26/Sep/2024 16:00:57] "POST /socket.io/?EIO=4&transport=polling&t=P8ljJJO&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:01:22,701 - INFO - 127.0.0.1 - - [26/Sep/2024 16:01:22] "GET /socket.io/?EIO=4&transport=polling&t=P8ljJJO.0&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:01:22,709 - INFO - 127.0.0.1 - - [26/Sep/2024 16:01:22] "POST /socket.io/?EIO=4&transport=polling&t=P8ljPQH&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:01:47,717 - INFO - 127.0.0.1 - - [26/Sep/2024 16:01:47] "GET /socket.io/?EIO=4&transport=polling&t=P8ljPQI&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:01:47,724 - INFO - 127.0.0.1 - - [26/Sep/2024 16:01:47] "POST /socket.io/?EIO=4&transport=polling&t=P8ljVX9&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:02:12,725 - INFO - 127.0.0.1 - - [26/Sep/2024 16:02:12] "GET /socket.io/?EIO=4&transport=polling&t=P8ljVX9.0&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
+2024-09-26 16:02:12,733 - INFO - 127.0.0.1 - - [26/Sep/2024 16:02:12] "POST /socket.io/?EIO=4&transport=polling&t=P8ljbdv&sid=zWIj2z9kGEtEv4LjAAAA HTTP/1.1" 200 -
